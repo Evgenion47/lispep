@@ -118,26 +118,29 @@
       (t t)))
 (haveSubset? '(3 5 6 1 8 9 12 2) '(1 2 34))
 ;1
-(defun split-by-one-space (string)
-    (loop for i = 0 then (1+ j)
-          as j = (position #\Space string :start i)
-          collect (subseq string i j)
-          while j))
+(defun tmp
+  (word target key)
+  (cond ((equal (word target))(cons word key))
+        (t(word))))
 
-(defun join-string-list (string-list)
-  (format nil "~{~A~^ ~}" string-list))
+(defun joinWord (list o1 o2)
+  (flat(mapcar (lambda (x) (cond ((equal x o1) (cons x (cons o2 nil))) (t x))) list)))
+(joinword '(quick brown koshka quick brown koshka) 'koshka 'jump)
+
+
+(defun flat (x)
+  (cond
+   ((null x) nil)
+   ((atom x) (list x))
+   (t(append (flat (car x)) (flat (cdr x))))))
+
+
 
 (defun joinWord
-  (strlst target key)
-  (cond
-        ((not  strlst) nil)
-        ((equal target (car strlst))(cons (car strlst) (cons key (joinWord (cdr strlst) target key))))
-        (t(cons (car strlst) (joinWord (cdr strlst) target key)))))
+  (str target key)
+  (mapcar (function(lambda(word) (tmp word target key)strlst))))
 
-(defun final (string target key)
-  (join-string-list(joinWord (split-by-one-space string) target key)))
-
-(final "quick brown kosh'ka quick brown kosh'ka" "kosh'ka" "jump")
+(joinword '(quick brown koshka quick brown koshka) koshka jump)
 
 ;2
 (defun shiftChar
@@ -158,20 +161,15 @@
             (3
                          (1 nil nil)
                          (4 nil nil))
-            (7 
+            (7
                          (6 nil nil) nil)))
+(setq tr '(5(3(2 nil nil)(4 nil nil))(7(6 nil nil)(8 nil nil))))
 (setq tr1 '(51
             (3
              (1 nil nil)
              (34 nil nil))
             (7
              (6 nil nil) nil)))
-
-
-;(setq tr '(5(3(1 nil nil)(4 nil nil))(7(6 nil nil) nil))))
-
-;пустое дерево
-;(nil nil nil)
 
 (defun data
   (tree)
@@ -256,26 +254,38 @@
 
 
 
-(defun takeRight
+(defun takeleft
   (tree)
   (cond
-    ((null (right tree)) (data tree))
-    (t (takeRight (right tree)))))
+    ((null (left tree)) (data tree))
+    (t (takeleft (left tree)))))
 
 (takeright tr)
 
 (defun del
-  (x tree)
-  (cond
-    ((null tree) nil)
-    ((= x (data tree))
-     (cond
-        ((null (left tree)) (right tree))
-        ((null (right tree)) (left tree))
-        (t list (takeRight (left tree))
-          (del (takeRight (left tree)) tree)
-          (right tree))))
-    ((< x (data tree)) (list (data tree) (del x (left tree)) (right tree)))
-    ((> x (data tree)) (list (data tree) (left tree) (del x (right tree))))))
+ (x tree)
+ (cond
+   ((null tree) nil)
+   ((= x (data tree))
+    (cond
+       ((null (right tree)) (left tree))
+       ((null (left tree)) (right tree))
+       (t (list (takeleft (right tree))
+               (left tree)
+               (del (takeleft (right tree)) (right tree))))))
 
-(del 4 tr)
+   ((< x (data tree)) (list (data tree) (del x (left tree)) (right tree)))
+   ((> x (data tree)) (list (data tree) (left tree) (del x (right tree))))))
+
+(del 5 tr)
+
+(defun joinWord (list o1 o2)
+  (flat(mapcar (lambda (x) (cond ((equal x o1) (cons x (cons o2 nil))) (t x))) list)))
+(joinword '(quick brown koshka quick brown koshka) 'koshka 'jump)
+
+
+(defun flat (x)
+  (cond
+   ((null x) nil)
+   ((atom x) (list x))
+   (t(append (flat (car x)) (flat (cdr x))))))
